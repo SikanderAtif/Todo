@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import "models/priority.dart";
+import "models/todo.dart";
 
 void main() {
   runApp(const MyApp());
@@ -16,55 +18,6 @@ class MyApp extends StatelessWidget {
       home: const HomeScreen(title: 'My Todos'),
     );
   }
-}
-
-enum Priority {
-  low,
-  medium,
-  high;
-
-  Color get color {
-    switch (this) {
-      case Priority.low:
-        return Colors.green;
-      case Priority.medium:
-        return Colors.orange;
-      case Priority.high:
-        return Colors.red;
-    }
-  }
-
-  String get label {
-    switch (this) {
-      case Priority.low:
-        return 'Low';
-      case Priority.medium:
-        return 'Medium';
-      case Priority.high:
-        return 'High';
-    }
-  }
-}
-
-class Todo {
-  final String id;
-  String text;
-  Priority priority;
-  bool isDone;
-  final DateTime dateCreated;
-
-  Todo({
-    required this.id,
-    required this.text,
-    required this.priority,
-    this.isDone = false,
-    DateTime? dateCreated,
-  }) : dateCreated = dateCreated ?? DateTime.now();
-
-  static String generateID() =>
-      DateTime.now().millisecondsSinceEpoch.toString();
-
-  void toggle() => isDone = !isDone;
 }
 
 class HomeScreen extends StatefulWidget {

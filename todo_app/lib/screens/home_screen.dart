@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/models/todo.dart';
 import 'package:todo_app/models/priority.dart';
-import 'package:todo_app/widgets/dismissible_list.dart';
 import 'package:todo_app/widgets/summary_bar.dart';
 import 'package:todo_app/widgets/add_todo_menu.dart';
-import 'package:todo_app/widgets/empty_state.dart';
+import 'package:todo_app/widgets/tab_content.dart';
 import 'details_screen.dart';
 import 'stats_screen.dart';
 
@@ -80,9 +79,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  void _onReorderItem(int oldIndex, int newIndex) {
-    String oldID = _currentTodos[oldIndex].id;
-    String newID = _currentTodos[newIndex].id;
+  void _onReorderItem(int oldIndex, int newIndex, String oldID, String newID) {
     int oIndex = _todos.indexWhere((t) => t.id == oldID);
 
     setState(() {
@@ -122,8 +119,8 @@ class _HomeScreenState extends State<HomeScreen>
   int get _done => _doneTodos.length;
   int get _total => _todos.length;
 
-  List<Todo> get _currentTodos {
-    switch (_tabController.index) {
+  List<Todo> _currentTodos(int index) {
+    switch (index) {
       case 1:
         return _activeTodos;
       case 2:
@@ -183,29 +180,29 @@ class _HomeScreenState extends State<HomeScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
-                _AllTab(
-                  todos: _currentTodos,
-                  toggleTodo: _toggleTodo,
-                  removeTodo: _removeTodo,
-                  onReorderItem: _onReorderItem,
-                  onTap: _onTap,
+                TabContent(
+                  todos: _currentTodos(0),
                   emptyMessage: 'No Todos Yet\nAdd One Now',
-                ),
-                _ActiveTab(
-                  todos: _currentTodos,
                   toggleTodo: _toggleTodo,
                   removeTodo: _removeTodo,
                   onReorderItem: _onReorderItem,
                   onTap: _onTap,
+                ),
+                TabContent(
+                  todos: _currentTodos(1),
                   emptyMessage: 'No Todos Remaining\nYahooo',
-                ),
-                _DoneTab(
-                  todos: _currentTodos,
                   toggleTodo: _toggleTodo,
                   removeTodo: _removeTodo,
                   onReorderItem: _onReorderItem,
                   onTap: _onTap,
+                ),
+                TabContent(
+                  todos: _currentTodos(2),
                   emptyMessage: 'No Todos Done Yet',
+                  toggleTodo: _toggleTodo,
+                  removeTodo: _removeTodo,
+                  onReorderItem: _onReorderItem,
+                  onTap: _onTap,
                 ),
               ],
             ),
@@ -219,98 +216,5 @@ class _HomeScreenState extends State<HomeScreen>
         label: const Text('Add Todo'),
       ),
     );
-  }
-}
-
-class _AllTab extends StatelessWidget {
-  final List<Todo> _todos;
-  final void Function(String) _toggleTodo;
-  final void Function(String) _removeTodo;
-  final void Function(int, int) _onReorderItem;
-  final void Function(Todo) _onTap;
-  final String _emptyMessage;
-
-  const _AllTab({
-    required this._todos,
-    required this._toggleTodo,
-    required this._removeTodo,
-    required this._onReorderItem,
-    required this._onTap,
-    required this._emptyMessage,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return _todos.isEmpty
-        ? EmptyState(message: _emptyMessage)
-        : DismissibleItem(
-            todos: _todos,
-            toggleTodo: _toggleTodo,
-            removeTodo: _removeTodo,
-            onReorderItem: _onReorderItem,
-            onTap: _onTap,
-          );
-  }
-}
-
-class _ActiveTab extends StatelessWidget {
-  final List<Todo> _todos;
-  final void Function(String) _toggleTodo;
-  final void Function(String) _removeTodo;
-  final void Function(int, int) _onReorderItem;
-  final void Function(Todo) _onTap;
-  final String _emptyMessage;
-
-  const _ActiveTab({
-    required this._todos,
-    required this._toggleTodo,
-    required this._removeTodo,
-    required this._onReorderItem,
-    required this._onTap,
-    required this._emptyMessage,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return _todos.isEmpty
-        ? EmptyState(message: _emptyMessage)
-        : DismissibleItem(
-            todos: _todos,
-            toggleTodo: _toggleTodo,
-            removeTodo: _removeTodo,
-            onReorderItem: _onReorderItem,
-            onTap: _onTap,
-          );
-  }
-}
-
-class _DoneTab extends StatelessWidget {
-  final List<Todo> _todos;
-  final void Function(String) _toggleTodo;
-  final void Function(String) _removeTodo;
-  final void Function(int, int) _onReorderItem;
-  final void Function(Todo) _onTap;
-  final String _emptyMessage;
-
-  const _DoneTab({
-    required this._todos,
-    required this._toggleTodo,
-    required this._removeTodo,
-    required this._onReorderItem,
-    required this._onTap,
-    required this._emptyMessage,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return _todos.isEmpty
-        ? EmptyState(message: _emptyMessage)
-        : DismissibleItem(
-            todos: _todos,
-            toggleTodo: _toggleTodo,
-            removeTodo: _removeTodo,
-            onReorderItem: _onReorderItem,
-            onTap: _onTap,
-          );
   }
 }

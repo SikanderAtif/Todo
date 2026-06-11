@@ -6,7 +6,7 @@ class DismissibleItem extends StatelessWidget {
   final List<Todo> _todos;
   final void Function(String) _toggleTodo;
   final void Function(String) _removeTodo;
-  final void Function(int, int) _onReorderItem;
+  final void Function(int, int, String, String) _onReorderItem;
   final void Function(Todo) _onTap;
 
   const DismissibleItem({
@@ -17,6 +17,12 @@ class DismissibleItem extends StatelessWidget {
     required this._onReorderItem,
     required this._onTap,
   });
+
+  void _onReorderItemHelper(int oldIndex, int newIndex) {
+    String oldID = _todos[oldIndex].id;
+    String newID = _todos[newIndex].id;
+    _onReorderItem(oldIndex, newIndex, oldID, newID);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +45,7 @@ class DismissibleItem extends StatelessWidget {
           ),
         );
       },
-      onReorderItem: _onReorderItem,
+      onReorderItem: _onReorderItemHelper,
     );
   }
 }
